@@ -16,16 +16,16 @@ namespace Mandelbrot
         private void pictureBox1_Click(object sender, EventArgs e)
         {
             //get mouse (x, y)
-            Point P = PointToScreen(new Point(pictureBox1.Location.X, pictureBox1.Location.Y));
+            Point P = PointToScreen(new Point(pictureBox1.Bounds.Left, pictureBox1.Bounds.Top));
             
-            Xpic = Cursor.Position.X - P.X;
-            Ypic = Cursor.Position.Y - P.Y;
+            Xpic = Cursor.Position.X - P.X - (pictureBox1.ClientSize.Width-pictureBox1.Image.Width)/2;
+            Ypic = Cursor.Position.Y - P.Y - (pictureBox1.ClientSize.Height - pictureBox1.Image.Height) / 2;
             Console.WriteLine(Xpic + " " + Ypic);
             
             
             //convert to local coordinates
-            double xScale = (double)pictureBox1.Width;
-            double yScale = (double)pictureBox1.Height;
+            double xScale = Math.Min(pictureBox1.Width, pictureBox1.Height); ;
+            double yScale = Math.Min(pictureBox1.Width, pictureBox1.Height); ;
 
             double x = (Xpic / xScale) * (R.fracBRx - R.fracTLx) + R.fracTLx - R.offsetX;
             double y = (Ypic / yScale) * (R.fracBRy - R.fracTLy) + R.fracTLy - R.offsetY;
