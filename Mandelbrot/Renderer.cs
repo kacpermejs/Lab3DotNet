@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace Mandelbrot
 {
@@ -17,12 +18,16 @@ namespace Mandelbrot
         public double offsetX = 0;
         public double offsetY = 0;
 
+        Stopwatch stopwatch = new Stopwatch();
+        public TimeSpan t;
 
-        int maxIterations = 500;
+
+        public int maxIterations = 64;
 
         public Renderer()
         {
             bmp = new Bitmap(10, 10);
+            stopwatch.Start();
         }
 
         public async void CenterToPoint(double x, double y)
@@ -47,7 +52,8 @@ namespace Mandelbrot
 
     public async void Draw2(int pixelsX, int pixelsY)
         {
-
+            stopwatch.Reset();
+            stopwatch.Start();
             Bitmap bm = new Bitmap(pixelsX, pixelsY);
             
             double xScale = (fracBRx - fracTLx) / (double)pixelsX;
@@ -87,6 +93,7 @@ namespace Mandelbrot
             }
             //bm.SetPixel(450, 450, Color.White);
             bmp = bm;
+            t = stopwatch.Elapsed;
 
         }
         public async void Draw(int pixelsX, int pixelsY, double Zoom)
