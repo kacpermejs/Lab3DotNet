@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace Mandelbrot
 {
     public partial class Form1 : Form
@@ -6,6 +8,10 @@ namespace Mandelbrot
 
         int Xpic;
         int Ypic;
+
+        Stopwatch stopwatch = new Stopwatch();
+        public TimeSpan t;
+
         public Form1()
         {
             InitializeComponent();
@@ -38,10 +44,14 @@ namespace Mandelbrot
 
         public async void Drawing()
         {
+            stopwatch.Reset();
+            stopwatch.Start();
             int size = Math.Min(pictureBox1.Width, pictureBox1.Height);
-            R.Draw2(size, size);
+            //R.Draw2(size, size);
+            R.DrawThreaded(size, size, 8);
             pictureBox1.Image = R.bmp;
-            TimeLabel.Text = "Elapsed time: " + R.t.TotalSeconds.ToString() + " seconds\n"
+            t = stopwatch.Elapsed;
+            TimeLabel.Text = "Elapsed time: " + t.TotalSeconds.ToString() + " seconds\n"
                            + "Iterations: " + R.maxIterations
                            + "\n(" + Xpic + ", " + Ypic + ")";
         }

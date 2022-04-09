@@ -26,6 +26,10 @@ namespace Mandelbrot
         {
             return Math.Sqrt((a * a) + (b * b));
         }
+        public double ModSquared()
+        {
+            return ((a * a) + (b * b));
+        }
 
         
         public static Complex operator +(Complex z1, Complex z2) => new Complex(z1.a + z2.a, z1.b + z2.b);
