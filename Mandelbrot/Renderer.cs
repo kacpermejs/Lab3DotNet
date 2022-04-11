@@ -59,12 +59,12 @@ namespace Mandelbrot
             int stripSize = pixelsX / threadCount;
             int diff = pixelsX - (stripSize * threadCount);
 
-            for (int i = 0; i < threadCount; i++)
+            threads[0] = new Thread(() => DrawSection(stripSize+diff, 0, pixelsY, 0, xScale, yScale, map));
+            for (int i = 1; i < threadCount; i++)
             {
                 var temp = i;
-                threads[i] = new Thread(() => DrawSection(stripSize, pixelsY, temp, xScale, yScale, map) );
+                threads[i] = new Thread(() => DrawSection(stripSize, diff, pixelsY, temp, xScale, yScale, map) );
             }
-            threads[threadCount-1] = new Thread(() => DrawSection(stripSize, pixelsY, threadCount-1, xScale, yScale, map));
 
             for (int i = 0; i < threadCount; i++)
             {
@@ -87,7 +87,7 @@ namespace Mandelbrot
             }
         }
 
-        private async void DrawSection(int stripSize, int pixelsY, int threadNum, double xScale, double yScale, int[,] map)
+        private async void DrawSection(int stripSize, int diff, int pixelsY, int threadNum, double xScale, double yScale, int[,] map)
         {
             
 
@@ -96,8 +96,8 @@ namespace Mandelbrot
                 for (int y = 0; y < pixelsY; y++)
                 {
 
-                    double a = ((x + threadNum*stripSize) * xScale + fracTLx - offsetX);
-                    double b = (y * yScale + fracTLy - offsetY);
+                    double a = (x + (threadNum*stripSize) + diff) * xScale + fracTLx - offsetX;
+                    double b = y * yScale + fracTLy - offsetY;
 
 
                     Complex c = new Complex(a, b);
@@ -114,7 +114,7 @@ namespace Mandelbrot
                             break;
 
                     } while (it < maxIterations);
-                    map[x + threadNum * stripSize, y] = it;
+                    map[x + (threadNum * stripSize) + diff, y] = it;
 
                 }
             }

@@ -8,6 +8,7 @@ namespace Mandelbrot
 
         int Xpic;
         int Ypic;
+        bool method = false;
 
         Stopwatch stopwatch = new Stopwatch();
         public TimeSpan t;
@@ -47,13 +48,22 @@ namespace Mandelbrot
             stopwatch.Reset();
             stopwatch.Start();
             int size = Math.Min(pictureBox1.Width, pictureBox1.Height);
-            //R.Draw2(size, size);
-            R.DrawThreaded(size, size, 8);
+            switch (method)
+            {
+                case false:
+                    R.Draw2(size, size);
+                    break;
+                case true:
+                    R.DrawThreaded(size, size, 32);
+                    break;
+            }
+            
             pictureBox1.Image = R.bmp;
             t = stopwatch.Elapsed;
             TimeLabel.Text = "Elapsed time: " + t.TotalSeconds.ToString() + " seconds\n"
                            + "Iterations: " + R.maxIterations
-                           + "\n(" + Xpic + ", " + Ypic + ")";
+                           + "\n(" + Xpic + ", " + Ypic + ")\n"
+                           + (method ? "Threaded" : "Sequential");
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -91,6 +101,17 @@ namespace Mandelbrot
                     Drawing();
                 }
                     
+            }
+            else if (e.KeyCode == Keys.M)
+            {
+                //switch method
+                method = !method;
+                Drawing();
+            }
+            else if (e.KeyCode == Keys.R)
+            {
+                //redraw
+                Drawing();
             }
         }
 
